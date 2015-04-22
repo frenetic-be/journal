@@ -1,0 +1,541 @@
+<!doctype html>
+<html>
+<head>
+ <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,300italic" rel="stylesheet" type="text/css">
+ <title>Python Documentation: journal</title>
+ <link href="docu.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+ <div class="back-title">
+  <h1 class="title">Python Documentation: journal</h1>
+ </div>
+ <div class="back-main">
+ <div class="main">
+ <div class="frame" id="nameframe">
+  <h4 class="frame-title">module name</h4>
+  <div class="frame-content">journal</div>
+ </div>
+ <div class="frame" id="nameframe">
+  <h4 class="frame-title">version</h4>
+  <div class="frame-content">1.0</div>
+ </div>
+ <div class="frame" id="descriptionframe">
+  <h4 class="frame-title">DESCRIPTION</h4>
+  <pre class="frame-content">.. module: logger</br>.. moduleauthor: Julien Spronck</br>.. created: April 21, 2015</br></br>Simple module to handle time-dependent data from csv files.</pre>
+ </div>
+ <div class="frame" id="modulesframe">
+  <h4 class="frame-title">dependent modules</h4>
+  <div class="frame-content">
+   <ul class="modules">
+    <li class="modules">datetime</li>
+    <li class="modules">matplotlib</li>
+    <li class="modules">numpy</li>
+    <li class="modules">pickle</li>
+   </ul>
+  </div>
+ </div>
+ <div class="frame" id="functionsframe">
+  <h4 class="frame-title">functions</h4>
+  <div class="frame-content">
+   <ul class="functions">
+    <li class="functions">
+     <div class="function">
+      <div class="function-name"><span class="function-name">_date2jd</span>(<span class="function-args">date</span>)</div>
+      <pre class="function-docstring">Returns the Julian date from a datetime object</br></br>Args:</br>    date (datetime.datetime object): the date to transform</pre>
+     </div>
+    </li>
+    <li class="functions">
+     <div class="function">
+      <div class="function-name"><span class="function-name">_isiterable</span>(<span class="function-args">obj</span>)</div>
+      <pre class="function-docstring">Checks if an object is iterable</br></br>Args:</br>    obj: the object to check</pre>
+     </div>
+    </li>
+    <li class="functions">
+     <div class="function">
+      <div class="function-name"><span class="function-name">_iter_letters</span>()</div>
+      <pre class="function-docstring">Generator that returns upper case letter combinations:</br>    A, B, C, ..., AA, AB, AC, ... ZX, ZY, ZZ, AAA, AAB, ...</br></br>Args:</pre>
+     </div>
+    </li>
+    <li class="functions">
+     <div class="function">
+      <div class="function-name"><span class="function-name">read_csv</span>(<span class="function-args">filename</span>, <span class="function-kw">names</span>=<span class="function-kwdef">None</span>, <span class="function-kw">delimiter</span>=<span class="function-kwdef">'</span>, <span class="function-kw">skiplines</span>=<span class="function-kwdef">0</span>, <span class="function-kw">field_header</span>=<span class="function-kwdef">True</span>)</div>
+      <pre class="function-docstring">Reads the csv file and transfer the content into a DataMatrix.</br></br>Args:</br>    filename (str): file name.</br>    fields (list of str, optional): list of fields or key for the output</br>        dictionary. This must have the same number of elements than the</br>        number of columns in your csv file. Defaults to None. If None, the</br>        keys to the output dictionary will simply be numbers from 0 to the</br>        number of columns - 1.</br>    types (function or list of function, optional): function or list of</br>        functions to convert the data from a string to what you want. You</br>        can use the functions csvfiles.str2date and csvfiles.str2float.</br>        Defaults to None. If None, the data type will be str.</br>    delimiter (str, optional): Delimiter. Defaults to ','.</br>    skiplines (int, optional): Skip the first n lines. Defaults to 0.</br>    field_header (bool, optional): If True, it uses the first line of the</br>        file to determine what the fields are. Defaults to False.</br></br>Returns:</br>    DataMatrix with content of the csv file</br></br>Raises:</br>    ValueError, TypeError</pre>
+     </div>
+    </li>
+    <li class="functions">
+     <div class="function">
+      <div class="function-name"><span class="function-name">read_pickle</span>(<span class="function-args">filename</span>)</div>
+      <pre class="function-docstring">Reads a pickle file and transfer the content into a DataMatrix.</br></br>Args:</br>    filename (str): file name.</br></br>Returns:</br>    DataMatrix with content of the csv file</br></br>Raises:</pre>
+     </div>
+    </li>
+   </ul>
+  </div>
+ </div> 
+ <div class="frame" id="classesframe">
+  <h4 class="frame-title">classes</h4>
+  <div class="frame-content">
+   <ul class="classes">
+    <li class="classes">
+     <div class="class">
+      <div class="class-name"><span class="class-name">AbstractDataColumn</span>(<span class="class-arg">object</span>)</div>
+       <div class="class-main">
+      <pre class="class-docstring">Base class for all data column objects</pre>
+      <div class="class-functions">
+       <h5 class="class-title">methods</h5>
+       <div class="class-content">
+        <ul class="class-functions">
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__init__</span>(<span class="function-kw">the_input</span>=<span class="function-kwdef">None</span>, <span class="function-kw">title</span>=<span class="function-kwdef">''</span>)</div>
+      <pre class="class-function-docstring">Initialization of the AbstractDataColumn class</br></br>Args:</br>    the_input (object, optional): data input. Can be an iterable, a</br>        string, an integer, a float, ...</br>    title (str, optional): column title. By default, ''</br></br>Raises:</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__nonzero__</span>()</div>
+      <pre class="class-function-docstring">truth value</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__repr__</span>()</div>
+      <pre class="class-function-docstring">__repr__ for data column</pre>
+     </div>
+    </li>
+        </ul>
+       </div> 
+      </div>
+     </div>
+     </div>
+    </li>
+    <li class="classes">
+     <div class="class">
+      <div class="class-name"><span class="class-name">DataColumn</span>(<span class="class-arg">AbstractDataColumn</span>)</div>
+       <div class="class-main">
+      <pre class="class-docstring">DataColumn class</pre>
+      <div class="class-functions">
+       <h5 class="class-title">methods</h5>
+       <div class="class-content">
+        <ul class="class-functions">
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__div__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">__div__ operator</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__divmod__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">__divmod__ operator</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__floordiv__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">__floordiv__ operator</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__ge__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">Comparison method: __ge__</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__init__</span>(<span class="function-kw">the_input</span>=<span class="function-kwdef">None</span>, <span class="function-kw">title</span>=<span class="function-kwdef">''</span>)</div>
+      <pre class="class-function-docstring">Initialization of the DataColumn class</br></br>Args:</br>    the_input (object, optional): data input. Can be an iterable, a</br>        string, an integer, a float, ...</br>    title (str, optional): column title. By default, ''</br></br>Raises:</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__init__</span>(<span class="function-kw">the_input</span>=<span class="function-kwdef">None</span>)</div>
+      <pre class="class-function-docstring">UnchangeableDataColumn initiliazation</br></br>Args:</br>    the_input (list, optional): the_input</br></br>Raises:</br>    TypeError (Cannot assign an UnchangeableDataColumn object)</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__le__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">Comparison method: __le__</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__ne__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">Comparison method: __ne__</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__radd__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">__radd__ operator</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__rmod__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">__rmod__ operator</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__rmul__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">__rmul__ operator</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__rpow__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">__rpow__ operator</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__rtruediv__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">__rtruediv__ operator</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__setitem__</span>(<span class="function-args">item</span>, <span class="function-args">value</span>)</div>
+      <pre class="class-function-docstring">__setitem__ is disabled for UnchangeableDataColumn data</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__sub__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">__sub__ operator</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">append</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">Appends object to the end of column</br></br>Args:</br>    other (object): can be a DataColumn, a numpy array or a scalar value</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">max</span>()</div>
+      <pre class="class-function-docstring">Maximum value in the column</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">mean</span>()</div>
+      <pre class="class-function-docstring">Mean value in the column</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">median</span>()</div>
+      <pre class="class-function-docstring">Median value in the column</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">min</span>()</div>
+      <pre class="class-function-docstring">Minimum value in the column</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">nonnan</span>()</div>
+      <pre class="class-function-docstring">non-NAN values in the column</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">sum</span>()</div>
+      <pre class="class-function-docstring">sum of all values in the column</pre>
+     </div>
+    </li>
+        </ul>
+       </div> 
+      </div>
+     </div>
+     </div>
+    </li>
+    <li class="classes">
+     <div class="class">
+      <div class="class-name"><span class="class-name">DataMatrix</span>(<span class="class-arg">object</span>)</div>
+       <div class="class-main">
+      <pre class="class-docstring">DataMatrix class</pre>
+      <div class="class-functions">
+       <h5 class="class-title">methods</h5>
+       <div class="class-content">
+        <ul class="class-functions">
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__getitem__</span>(<span class="function-args">index</span>)</div>
+      <pre class="class-function-docstring">Gets item from matrix</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__init__</span>(<span class="function-kw">inp</span>=<span class="function-kwdef">None</span>, <span class="function-kw">names</span>=<span class="function-kwdef">None</span>)</div>
+      <pre class="class-function-docstring">DataMatrix initialization</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__nonzero__</span>()</div>
+      <pre class="class-function-docstring">truth value</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">names</span>()</div>
+      <pre class="class-function-docstring">names property: returns the column titles/headers</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">ncols</span>()</div>
+      <pre class="class-function-docstring">Number of columns</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">nrows</span>()</div>
+      <pre class="class-function-docstring">Number of rows</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">row</span>(<span class="function-args">index</span>)</div>
+      <pre class="class-function-docstring">Gets the row at index</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">save_pickle</span>(<span class="function-args">filename</span>)</div>
+      <pre class="class-function-docstring">Saves DataMatrix to a pickle file</br></br>Args:</br>    filename (str): file name.</br></br>Returns:</br></br>Raises:</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">shape</span>()</div>
+      <pre class="class-function-docstring">Matrix shape</pre>
+     </div>
+    </li>
+        </ul>
+       </div> 
+      </div>
+     </div>
+     </div>
+    </li>
+    <li class="classes">
+     <div class="class">
+      <div class="class-name"><span class="class-name">Logger</span>(<span class="class-arg">object</span>)</div>
+       <div class="class-main">
+      <pre class="class-docstring">Logger class: allows easy logging of timed events or variables</pre>
+      <div class="class-modules">
+       <h5 class="class-title">modules</h5>
+       <div class="class-content">
+        <ul class="class-modules">
+         <li class="class-modules">os</li>
+        </ul>
+       </div>
+      </div>
+      <div class="class-functions">
+       <h5 class="class-title">methods</h5>
+       <div class="class-content">
+        <ul class="class-functions">
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__init__</span>(<span class="function-args">fileroot</span>, <span class="function-kw">delimiter</span>=<span class="function-kwdef">'</span>, <span class="function-kw">logdir</span>=<span class="function-kwdef">'logs'</span>, <span class="function-kw">headers</span>=<span class="function-kwdef">None</span>, <span class="function-kw">utc</span>=<span class="function-kwdef">True</span>, <span class="function-kw">timestamp</span>=<span class="function-kwdef">True</span>, <span class="function-kw">time_format</span>=<span class="function-kwdef">'%Y-%m-%d %H:%M:%S.%f'</span>)</div>
+      <pre class="class-function-docstring">Logger initialization:</br></br>Args:</br>    fileroot (str): the root of the file name. For example,</br>        if fileroot = 'Blah_', the log files will be similar to</br>        Blah_20150403.txt</br></br>    delimiter (str, optional): the delimiter between columns in the file.</br>        Default is ',' (csv file)</br></br>    logdir (str, optional): name of the directory where to save the logs.</br>        Default is './logs/'. The logs will then be saved in</br>        './logs/20150403/Blah_20150403.txt'</br></br>    headers (list of str, optional): list of column headers. Default is None.</br></br>    utc (bool, optional): time stamps in utc times? Default is True.</br></br>    timestamp (bool, optional): Add timestamps to each row? Default is True.</br></br>    time_format (str, optional): format for time stamps.</br>        Default is '%Y-%m-%d %H:%M:%S.%f'.</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">datestr</span>()</div>
+      <pre class="class-function-docstring">datestr property: returns the current date in the format '%Y%m%d'</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">filename</span>()</div>
+      <pre class="class-function-docstring">filename property: returns the name of the file given the current date</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">create_directory</span>()</div>
+      <pre class="class-function-docstring">Create all directories</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">log</span>()</div>
+      <pre class="class-function-docstring">Logs data to file</br></br>Args:</br>    *args: data to log</br></br>    warning (bool, optional): adds 'WARNING: ' at the beginning of entry (after timestamp)</br></br>    error (bool, optional): adds 'ERROR: ' at the beginning of entry (after timestamp)</pre>
+     </div>
+    </li>
+        </ul>
+       </div> 
+      </div>
+     </div>
+     </div>
+    </li>
+    <li class="classes">
+     <div class="class">
+      <div class="class-name"><span class="class-name">LoggingError</span>(<span class="class-arg">Exception</span>)</div>
+       <div class="class-main">
+      <pre class="class-docstring">LoggingError exception</pre>
+     </div>
+     </div>
+    </li>
+    <li class="classes">
+     <div class="class">
+      <div class="class-name"><span class="class-name">TimeColumn</span>(<span class="class-arg">AbstractDataColumn</span>)</div>
+       <div class="class-main">
+      <pre class="class-docstring">Class for time data</pre>
+      <div class="class-modules">
+       <h5 class="class-title">modules</h5>
+       <div class="class-content">
+        <ul class="class-modules">
+         <li class="class-modules">dateutil</li>
+        </ul>
+       </div>
+      </div>
+      <div class="class-variables">
+       <h5 class="class-title">variables</h5>
+       <div class="class-content">
+        <ul class="class-variables">
+         <li class="class-variables">__default_epoch</li>
+        </ul>
+       </div>
+      </div>
+      <div class="class-functions">
+       <h5 class="class-title">methods</h5>
+       <div class="class-content">
+        <ul class="class-functions">
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__add__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">__add__ operator</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__eq__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">Comparison method: __eq__</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__getitem__</span>(<span class="function-args">item</span>)</div>
+      <pre class="class-function-docstring">Gets item from column</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__gt__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">Comparison method: __gt__</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__init__</span>(<span class="function-kw">the_input</span>=<span class="function-kwdef">None</span>, <span class="function-kw">epoch</span>=<span class="function-kwdef">None</span>)</div>
+      <pre class="class-function-docstring">Time data initiliazation</br></br>Args:</br>    the_input (list, optional): sequence of strings representing the</br>        time</br>    epoch (datetime object, optional): epoch. By default,</br>        dt.datetime(1970,1,1)</br></br>Raises:</br>    ValueError (cannot be converted to a date)</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__lt__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">Comparison method: __lt__</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">__radd__</span>(<span class="function-args">other</span>)</div>
+      <pre class="class-function-docstring">__radd__ operator</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">date</span>()</div>
+      <pre class="class-function-docstring">date property: _numpy array of datetime objects</br></br>Returns:</br>    a new UnchangeableDataColumn with datetime objects</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">day</span>()</div>
+      <pre class="class-function-docstring">day property: _numpy array with days</br></br>Returns:</br>    a new UnchangeableDataColumn with the day</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">hour</span>()</div>
+      <pre class="class-function-docstring">hour property: _numpy array with hours</br></br>Returns:</br>    a new UnchangeableDataColumn with the hours</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">jd</span>()</div>
+      <pre class="class-function-docstring">jd property: _numpy array with Julian dates</br></br>Returns:</br>    a new UnchangeableDataColumn with the jds</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">microsecond</span>()</div>
+      <pre class="class-function-docstring">microsecond property: _numpy array with micro-seconds</br></br>Returns:</br>    a new UnchangeableDataColumn with the micro-seconds</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">minute</span>()</div>
+      <pre class="class-function-docstring">minute property: _numpy array with minutes</br></br>Returns:</br>    a new UnchangeableDataColumn with the minutes</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">month</span>()</div>
+      <pre class="class-function-docstring">month property: _numpy array with months</br></br>Returns:</br>    a new UnchangeableDataColumn with the months</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">second</span>()</div>
+      <pre class="class-function-docstring">second property: _numpy array with seconds</br></br>Returns:</br>    a new UnchangeableDataColumn with the seconds</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">time</span>()</div>
+      <pre class="class-function-docstring">time property: _numpy array with times in seconds</br>    compared to the earliest time in the column</br></br>Returns:</br>    a new UnchangeableDataColumn with the times in seconds</br>        starting from 0</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">time_from_epoch</span>(<span class="function-args">timestamp</span>)</div>
+      <pre class="class-function-docstring">datetime obtained from timestamp since epoch</br></br>Returns:</br>    datetime.datetime object</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">time_since_epoch</span>()</div>
+      <pre class="class-function-docstring">time_since_epoch property: _numpy array with time since epoch in seconds</br></br>Returns:</br>    a new UnchangeableDataColumn with times since epoch in seconds</pre>
+     </div>
+    </li>
+    <li class="class-functions">
+     <div class="class-function">
+      <div class="class-function-name"><span class="class-function-name">year</span>()</div>
+      <pre class="class-function-docstring">year property: _numpy array with years</br></br>Returns:</br>    a new UnchangeableDataColumn with the years</pre>
+     </div>
+    </li>
+        </ul>
+       </div> 
+      </div>
+     </div>
+     </div>
+    </li>
+   </ul>
+  </div>
+ </div>
+ <div class="credits">This page was made with <a href="">docu 1.2</a>
+ </div>
+ </div>
+ </div>
+</body>
+</html>
