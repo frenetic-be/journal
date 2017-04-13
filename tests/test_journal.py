@@ -1,4 +1,6 @@
-# to use this, cd ../.. from this directory and type "python -m journal.tests.logs_test"
+# to use this, cd .. from this directory and type
+# "python -m unittest tests.test_journal"
+
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
@@ -21,7 +23,7 @@ class TestDataColumnInit(_unittest.TestCase):
     def test_init_int(self):
         col = lg.DataColumn(3)
         self.assertIsInstance(col, lg.DataColumn)
-        self.assertEqual(col.type, numpy.int32)
+        self.assertIn(col.type, [numpy.int32, numpy.int64])
         self.assertEqual(len(col), 1)
         self.assertTrue(col)
 
@@ -35,14 +37,14 @@ class TestDataColumnInit(_unittest.TestCase):
     def test_init_list(self):
         col = lg.DataColumn([1, 5])
         self.assertIsInstance(col, lg.DataColumn)
-        self.assertEqual(col.type, numpy.int32)
+        self.assertIn(col.type, [numpy.int32, numpy.int64])
         self.assertEqual(len(col), 2)
         self.assertTrue(col)
 
     def test_init_array(self):
         col = lg.DataColumn(numpy.array([1, 5]))
         self.assertIsInstance(col, lg.DataColumn)
-        self.assertEqual(col.type, numpy.int32)
+        self.assertIn(col.type, [numpy.int32, numpy.int64])
         self.assertEqual(len(col), 2)
         self.assertTrue(col)
 
@@ -50,7 +52,7 @@ class TestDataColumnInit(_unittest.TestCase):
         col = lg.DataColumn(numpy.array([1, 5]))
         col2 = lg.DataColumn(col)
         self.assertIsInstance(col2, lg.DataColumn)
-        self.assertEqual(col2.type, numpy.int32)
+        self.assertIn(col2.type, [numpy.int32, numpy.int64])
         self.assertEqual(len(col2), 2)
         self.assertTrue(col)
 
@@ -271,7 +273,7 @@ class TestDataColumnItems(_unittest.TestCase):
 
     def test_getint(self):
         col = lg.DataColumn([3, 7])
-        self.assertIsInstance(col[0], numpy.int32)
+        self.assertIsInstance(col[0], (numpy.int32, numpy.int64))
         self.assertTrue(col[0] == 3)
 
     def test_getslice(self):
@@ -640,35 +642,83 @@ class TestDataColumnOperations(_unittest.TestCase):
 
 class TestDataColumnComparisons(_unittest.TestCase):
 
+    def setUp(self):
+        self.col = lg.DataColumn([1, 3, 7])
+        self.arr = numpy.array([8, 3, 1])
+        self.col2 = lg.DataColumn(self.arr)
+        self.scalar = 3
+
     def test_intlt(self):
-        col = lg.DataColumn([3, 7])
-        self.assertEqual(type(col<3), lg.DataColumn)
-        self.assertTrue(((col<3).values == [False, False]).all())
+        self.assertEqual(type(self.col<self.scalar), lg.DataColumn)
+        self.assertTrue(((self.col<self.scalar).values == [True, False, False]).all())
+        
+        # Test with a numpy array        
+        self.assertEqual(type(self.col<self.arr), lg.DataColumn)
+        self.assertTrue(((self.col<self.arr).values == [True, False, False]).all())
+        
+        # Test with another TimeColumn
+        self.assertEqual(type(self.col<self.col2), lg.DataColumn)
+        self.assertTrue(((self.col<self.col2).values == [True, False, False]).all())
 
     def test_intgt(self):
-        col = lg.DataColumn([3, 7])
-        self.assertEqual(type(col>3), lg.DataColumn)
-        self.assertTrue(((col>3).values == [False, True]).all())
+        self.assertEqual(type(self.col>self.scalar), lg.DataColumn)
+        self.assertTrue(((self.col>self.scalar).values == [False, False, True]).all())
+
+        # Test with a numpy array        
+        self.assertEqual(type(self.col>self.arr), lg.DataColumn)
+        self.assertTrue(((self.col>self.arr).values == [False, False, True]).all())
+        
+        # Test with another TimeColumn
+        self.assertEqual(type(self.col>self.col2), lg.DataColumn)
+        self.assertTrue(((self.col>self.col2).values == [False, False, True]).all())
 
     def test_intle(self):
-        col = lg.DataColumn([3, 7])
-        self.assertEqual(type(col<=3), lg.DataColumn)
-        self.assertTrue(((col<=3).values == [True, False]).all())
+        self.assertEqual(type(self.col<=self.scalar), lg.DataColumn)
+        self.assertTrue(((self.col<=self.scalar).values == [True, True, False]).all())
+
+        # Test with a numpy array        
+        self.assertEqual(type(self.col<=self.arr), lg.DataColumn)
+        self.assertTrue(((self.col<=self.arr).values == [True, True, False]).all())
+        
+        # Test with another TimeColumn
+        self.assertEqual(type(self.col<=self.col2), lg.DataColumn)
+        self.assertTrue(((self.col<=self.col2).values == [True, True, False]).all())
 
     def test_intge(self):
-        col = lg.DataColumn([3, 7])
-        self.assertEqual(type(col>=3), lg.DataColumn)
-        self.assertTrue(((col>=3).values == [True, True]).all())
+        self.assertEqual(type(self.col>=self.scalar), lg.DataColumn)
+        self.assertTrue(((self.col>=self.scalar).values == [False, True, True]).all())
+        
+        # Test with a numpy array        
+        self.assertEqual(type(self.col>=self.arr), lg.DataColumn)
+        self.assertTrue(((self.col>=self.arr).values == [False, True, True]).all())
+        
+        # Test with another TimeColumn
+        self.assertEqual(type(self.col>=self.col2), lg.DataColumn)
+        self.assertTrue(((self.col>=self.col2).values == [False, True, True]).all())
 
     def test_inteq(self):
-        col = lg.DataColumn([3, 7])
-        self.assertEqual(type(col==3), lg.DataColumn)
-        self.assertTrue(((col==3).values == [True, False]).all())
+        self.assertEqual(type(self.col==self.scalar), lg.DataColumn)
+        self.assertTrue(((self.col==self.scalar).values == [False, True, False]).all())
+
+        # Test with a numpy array        
+        self.assertEqual(type(self.col==self.arr), lg.DataColumn)
+        self.assertTrue(((self.col==self.arr).values == [False, True, False]).all())
+        
+        # Test with another TimeColumn
+        self.assertEqual(type(self.col==self.col2), lg.DataColumn)
+        self.assertTrue(((self.col==self.col2).values == [False, True, False]).all())
 
     def test_intne(self):
-        col = lg.DataColumn([3, 7])
-        self.assertEqual(type(col!=3), lg.DataColumn)
-        self.assertTrue(((col!=3).values == [False, True]).all())
+        self.assertEqual(type(self.col!=self.scalar), lg.DataColumn)
+        self.assertTrue(((self.col!=self.scalar).values == [True, False, True]).all())
+        
+        # Test inequality with a numpy array        
+        self.assertEqual(type(self.col!=self.arr), lg.DataColumn)
+        self.assertTrue(((self.col!=self.arr).values == [True, False, True]).all())
+        
+        # Test inequality with another TimeColumn
+        self.assertEqual(type(self.col!=self.col2), lg.DataColumn)
+        self.assertTrue(((self.col!=self.col2).values == [True, False, True]).all())
 
 class TestDataColumnProperties(_unittest.TestCase):
 
@@ -691,13 +741,41 @@ class TestDataColumnProperties(_unittest.TestCase):
     def test_sum(self):
         col = lg.DataColumn([3, 7])
         self.assertEqual(col.sum, 10)
+        
+    def test_all(self):
+        col = lg.DataColumn([True, True])
+        self.assertTrue(col.all)
+        col = lg.DataColumn([True, False])
+        self.assertFalse(col.all)
+        col = lg.DataColumn([1, 1])
+        self.assertTrue(col.all)
+        col = lg.DataColumn([1, 0])
+        self.assertFalse(col.all)
+        col = lg.DataColumn([1.0, 3.5])
+        self.assertTrue(col.all)
+        col = lg.DataColumn([1.0, 0.])
+        self.assertFalse(col.all)
+        
+    def test_any(self):
+        col = lg.DataColumn([True, False])
+        self.assertTrue(col.any)
+        col = lg.DataColumn([False, False])
+        self.assertFalse(col.any)
+        col = lg.DataColumn([1, 0])
+        self.assertTrue(col.any)
+        col = lg.DataColumn([0, 0])
+        self.assertFalse(col.any)
+        col = lg.DataColumn([1.0, 3.5])
+        self.assertTrue(col.any)
+        col = lg.DataColumn([0., 0.])
+        self.assertFalse(col.any)
 
 class TestDataAppend(_unittest.TestCase):
 
     def test_append_int(self):
         col = lg.DataColumn([3, 7])
         col.append(5)
-        self.assertEqual(col.type, numpy.int32)
+        self.assertIn(col.type, [numpy.int32, numpy.int64])
         self.assertEqual(len(col), 3)
         self.assertTrue((col.values == [3, 7, 5]).all())
 
@@ -718,16 +796,29 @@ class TestDataAppend(_unittest.TestCase):
     def test_append_array(self):
         col = lg.DataColumn([3, 7])
         col.append(numpy.array([5, 4]))
-        self.assertEqual(col.type, numpy.int32)
+        self.assertIn(col.type, [numpy.int32, numpy.int64])
         self.assertEqual(len(col), 4)
         self.assertTrue((col.values == [3, 7, 5, 4]).all())
 
     def test_append_col(self):
         col = lg.DataColumn([3, 7])
         col.append(col)
-        self.assertEqual(col.type, numpy.int32)
+        self.assertIn(col.type, [numpy.int32, numpy.int64])
         self.assertEqual(len(col), 4)
         self.assertTrue((col.values == [3, 7, 3, 7]).all())
+
+class TestDataCopy(_unittest.TestCase):
+
+    def test_append(self):
+        col = lg.DataColumn([3, 7])
+        col2 = col.copy()
+        self.assertEqual(col, col2)
+        col.append(5)
+        self.assertEqual(len(col), 3)
+        self.assertTrue((col.values == [3, 7, 5]).all())
+        self.assertEqual(len(col2), 2)
+        self.assertTrue((col2.values == [3, 7]).all())
+        self.assertNotEqual(col, col2)
 
 class TestTimeColumnOperations(_unittest.TestCase):
 
@@ -830,35 +921,90 @@ class TestTimeColumnOperations(_unittest.TestCase):
 
 class TestTimeColumnComparisons(_unittest.TestCase):
 
+    def setUp(self):
+        self.col = lg.TimeColumn([datetime.datetime(2015,2,1),
+                                  datetime.datetime(2015,2,3),
+                                  datetime.datetime(2015,2,7)])
+
+        self.arr = numpy.array([datetime.datetime(2015,2,8),
+                                datetime.datetime(2015,2,3),
+                                datetime.datetime(2015,2,1)])
+
+        self.col2 = lg.TimeColumn(self.arr)
+        
+        self.scalar = datetime.datetime(2015,2,3)
+
     def test_intlt(self):
-        col = lg.TimeColumn([datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)])
-        self.assertEqual(type(col<datetime.datetime(2015,1,5)), lg.DataColumn)
-        self.assertTrue(((col<datetime.datetime(2015,1,5)).values == [False, False]).all())
+        self.assertEqual(type(self.col<self.scalar), lg.DataColumn)
+        self.assertTrue(((self.col<self.scalar).values == [True, False, False]).all())
+        
+        # Test with a numpy array        
+        self.assertEqual(type(self.col<self.arr), lg.DataColumn)
+        self.assertTrue(((self.col<self.arr).values == [True, False, False]).all())
+        
+        # Test with another TimeColumn
+        self.assertEqual(type(self.col<self.col2), lg.DataColumn)
+        self.assertTrue(((self.col<self.col2).values == [True, False, False]).all())
 
     def test_intgt(self):
-        col = lg.TimeColumn([datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)])
-        self.assertEqual(type(col>datetime.datetime(2015,1,5)), lg.DataColumn)
-        self.assertTrue(((col>datetime.datetime(2015,1,5)).values == [True, False]).all())
+        self.assertEqual(type(self.col>self.scalar), lg.DataColumn)
+        self.assertTrue(((self.col>self.scalar).values == [False, False, True]).all())
+
+        # Test with a numpy array        
+        self.assertEqual(type(self.col>self.arr), lg.DataColumn)
+        self.assertTrue(((self.col>self.arr).values == [False, False, True]).all())
+        
+        # Test with another TimeColumn
+        self.assertEqual(type(self.col>self.col2), lg.DataColumn)
+        self.assertTrue(((self.col>self.col2).values == [False, False, True]).all())
 
     def test_intle(self):
-        col = lg.TimeColumn([datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)])
-        self.assertEqual(type(col<=datetime.datetime(2015,1,5)), lg.DataColumn)
-        self.assertTrue(((col<=datetime.datetime(2015,1,5)).values == [False, True]).all())
+        self.assertEqual(type(self.col<=self.scalar), lg.DataColumn)
+        self.assertTrue(((self.col<=self.scalar).values == [True, True, False]).all())
+
+        # Test with a numpy array        
+        self.assertEqual(type(self.col<=self.arr), lg.DataColumn)
+        self.assertTrue(((self.col<=self.arr).values == [True, True, False]).all())
+        
+        # Test with another TimeColumn
+        self.assertEqual(type(self.col<=self.col2), lg.DataColumn)
+        self.assertTrue(((self.col<=self.col2).values == [True, True, False]).all())
 
     def test_intge(self):
-        col = lg.TimeColumn([datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)])
-        self.assertEqual(type(col>=datetime.datetime(2015,1,5)), lg.DataColumn)
-        self.assertTrue(((col>=datetime.datetime(2015,1,5)).values == [True, True]).all())
+        self.assertEqual(type(self.col>=self.scalar), lg.DataColumn)
+        self.assertTrue(((self.col>=self.scalar).values == [False, True, True]).all())
+        
+        # Test with a numpy array        
+        self.assertEqual(type(self.col>=self.arr), lg.DataColumn)
+        self.assertTrue(((self.col>=self.arr).values == [False, True, True]).all())
+        
+        # Test with another TimeColumn
+        self.assertEqual(type(self.col>=self.col2), lg.DataColumn)
+        self.assertTrue(((self.col>=self.col2).values == [False, True, True]).all())
 
     def test_inteq(self):
-        col = lg.TimeColumn([datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)])
-        self.assertEqual(type(col==datetime.datetime(2015,1,5)), lg.DataColumn)
-        self.assertTrue(((col==datetime.datetime(2015,1,5)).values == [False, True]).all())
+        self.assertEqual(type(self.col==self.scalar), lg.DataColumn)
+        self.assertTrue(((self.col==self.scalar).values == [False, True, False]).all())
+
+        # Test with a numpy array        
+        self.assertEqual(type(self.col==self.arr), lg.DataColumn)
+        self.assertTrue(((self.col==self.arr).values == [False, True, False]).all())
+        
+        # Test with another TimeColumn
+        self.assertEqual(type(self.col==self.col2), lg.DataColumn)
+        self.assertTrue(((self.col==self.col2).values == [False, True, False]).all())
 
     def test_intne(self):
-        col = lg.TimeColumn([datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)])
-        self.assertEqual(type(col!=datetime.datetime(2015,1,5)), lg.DataColumn)
-        self.assertTrue(((col!=datetime.datetime(2015,1,5)).values == [True, False]).all())
+        self.assertEqual(type(self.col!=self.scalar), lg.DataColumn)
+        self.assertTrue(((self.col!=self.scalar).values == [True, False, True]).all())
+        
+        # Test inequality with a numpy array        
+        self.assertEqual(type(self.col!=self.arr), lg.DataColumn)
+        self.assertTrue(((self.col!=self.arr).values == [True, False, True]).all())
+        
+        # Test inequality with another TimeColumn
+        self.assertEqual(type(self.col!=self.col2), lg.DataColumn)
+        self.assertTrue(((self.col!=self.col2).values == [True, False, True]).all())
 
 class TestTimeColumnProperties(_unittest.TestCase):
 
@@ -978,13 +1124,152 @@ class TestTimeAppend(_unittest.TestCase):
         self.assertEqual(len(col), 4)
         self.assertTrue((col.date.values == [datetime.datetime(2015,2,1), datetime.datetime(2015,1,5), datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)]).all())
 
+class TestTimeCopy(_unittest.TestCase):
+
+    def test_append_datetime(self):
+        col = lg.TimeColumn([datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)])
+        col2 = col.copy()
+        self.assertEqual(col, col2)
+        now = datetime.datetime.now()
+        col.append(now)
+        self.assertEqual(len(col), 3)
+        self.assertTrue((col.date.values == [datetime.datetime(2015,2,1), datetime.datetime(2015,1,5), now]).all())
+        self.assertEqual(len(col2), 2)
+        self.assertTrue((col2.date.values == [datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)]).all())
+        self.assertNotEqual(col, col2)
+
+class TestDataMatrixCopy(_unittest.TestCase):
+
+    def setUp(self):
+        col = lg.TimeColumn([datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)])
+        col2 = lg.DataColumn([3, 7])
+        dic = {'time': col, 'blah': col2}
+        self.dm = lg.DataMatrix(dic)
+        self.dm2 = self.dm.copy()
+
+    def test_copy_are_equal(self):
+        self.assertTrue(self.dm == self.dm2)
+        self.assertFalse(self.dm != self.dm2)
+        
+    def test_copy_is_modified(self):
+        self.assertTrue(self.dm == self.dm2)
+        self.assertFalse(self.dm != self.dm2)
+        self.assertEqual(self.dm.shape, (2, 2))
+        self.assertEqual(self.dm2.shape, (2, 2))
+        
+        self.dm2['time'].append(datetime.datetime(2015,2,9))
+        self.dm2['blah'].append(9)
+        self.assertTrue(self.dm != self.dm2)
+        self.assertFalse(self.dm == self.dm2)
+        self.assertEqual(self.dm.shape, (2, 2))
+        self.assertEqual(self.dm2.shape, (3, 2))
+        
+class TestDataMatrixAppend(_unittest.TestCase):
+
+    def setUp(self):
+        self.col = lg.TimeColumn([datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)])
+        self.col2 = lg.DataColumn([3, 7])
+        dic = {'time': self.col, 'blah': self.col2}
+        self.dm = lg.DataMatrix(dic)
+
+    def test_wrong_type(self):
+        with self.assertRaises(TypeError):
+            self.dm.append(5)
+
+        with self.assertRaises(TypeError):
+            self.dm.append("5")
+            
+        with self.assertRaises(TypeError):
+            self.dm.append(self.col)
+
+        self.dm.append(self.dm)
+        
+    def test_wrong_column_names(self):
+        dic2 = {'time': self.col, 'blaaah': self.col2}
+        dm2 = lg.DataMatrix(dic2)
+        
+        with self.assertRaises(ValueError):
+            self.dm.append(dm2)
+
+        dic = {'time': self.col, 'blah': self.col2}
+        dm2 = lg.DataMatrix(dic)
+        self.dm.append(dm2)
+        
+    def test_append(self):
+
+        self.assertEqual(self.dm.shape, (2, 2)) 
+
+        dic = {'time': self.col, 'blah': self.col2+1}
+        dm2 = lg.DataMatrix(dic)
+        
+        self.dm.append(dm2)
+
+        self.assertEqual(self.dm.shape, (4, 2)) 
+        self.assertTrue((self.dm['time'].date.values == [datetime.datetime(2015,2,1), datetime.datetime(2015,1,5), datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)]).all())
+        self.assertTrue((self.dm['blah'].values == [3, 7, 4, 8]).all())
+
+class TestDataMatrixComparisons(_unittest.TestCase):
+    
+    def setUp(self):
+        col = lg.TimeColumn([datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)])
+        col2 = lg.DataColumn([3, 7])
+        dic = {'time': col, 'blah': col2}
+        self.dm = lg.DataMatrix(dic)
+
+    def test_eq(self):
+        col = lg.TimeColumn([datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)])
+        col2 = lg.DataColumn([3, 7])
+        dic = {'time': col, 'blah': col2}
+        dm2 = lg.DataMatrix(dic)        
+        self.assertTrue(self.dm == dm2)
+        self.assertFalse(self.dm != dm2)
+        
+    def test_eq_different_type(self):
+        col = lg.TimeColumn([datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)])
+        col2 = lg.DataColumn([3, 7])
+        dm2 = {'time': col, 'blah': col2}
+        self.assertFalse(self.dm == dm2)
+        self.assertTrue(self.dm != dm2)
+
+    def test_eq_different_number_of_columns(self):
+        col = lg.TimeColumn([datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)])
+        col2 = lg.DataColumn([3, 7])
+        dic = {'time': col, 'blah': col2, 'blah2': col2.copy()}
+        dm2 = lg.DataMatrix(dic)
+        self.assertFalse(self.dm == dm2)
+        self.assertTrue(self.dm != dm2)
+        
+    def test_eq_different_number_of_rows(self):
+        col = lg.TimeColumn([datetime.datetime(2015,2,1)])
+        col2 = lg.DataColumn([3])
+        dic = {'time': col, 'blah': col2}
+        dm2 = lg.DataMatrix(dic)
+        self.assertFalse(self.dm == dm2)
+        self.assertTrue(self.dm != dm2)
+        
+    def test_eq_different_column_names(self):
+        col = lg.TimeColumn([datetime.datetime(2015,2,1), datetime.datetime(2015,1,5)])
+        col2 = lg.DataColumn([3, 7])
+        dic = {'time': col, 'blaaaaah': col2}
+        dm2 = lg.DataMatrix(dic)
+        self.assertFalse(self.dm == dm2)
+        self.assertTrue(self.dm != dm2)
+        
+    def test_eq_different_column_data(self):
+        col = lg.TimeColumn([datetime.datetime(2015,2,3), datetime.datetime(2015,1,5)])
+        col2 = lg.DataColumn([3, 8])
+        dic = {'time': col, 'blah': col2}
+        dm2 = lg.DataMatrix(dic)        
+        self.assertFalse(self.dm == dm2)
+        self.assertTrue(self.dm != dm2)
+
 class TestReadCSV(_unittest.TestCase):
 
     def test_header(self):
         dm = lg.read_csv(ROOT+'logs_test_hdr.csv')
         self.assertEqual(dm.shape, (5, 4))
         self.assertEqual(dm['time'].type, numpy.string_)
-        self.assertEqual(dm['hum'].type, numpy.int32)
+        self.assertIn(dm['hum'].type, [numpy.int32, numpy.int64])
         self.assertEqual(dm['temp'].type, numpy.float64)
         self.assertEqual(dm['status'].type, numpy.string_)
 
@@ -993,7 +1278,7 @@ class TestReadCSV(_unittest.TestCase):
         self.assertEqual(dm.shape, (3, 4))
         self.assertEqual(dm['time'].type, numpy.string_)
         self.assertEqual(dm['temp'].type, numpy.float64)
-        self.assertEqual(dm['hum'].type, numpy.int32)
+        self.assertIn(dm['hum'].type, [numpy.int32, numpy.int64])
         self.assertEqual(dm['status'].type, numpy.string_)
 
     def test_wrongline(self):
@@ -1001,7 +1286,7 @@ class TestReadCSV(_unittest.TestCase):
         self.assertEqual(dm.shape, (4, 4))
         self.assertEqual(dm['time'].type, numpy.string_)
         self.assertEqual(dm['temp'].type, numpy.float64)
-        self.assertEqual(dm['hum'].type, numpy.int32)
+        self.assertIn(dm['hum'].type, [numpy.int32, numpy.int64])
         self.assertEqual(dm['status'].type, numpy.string_)
 
     def test_no_header(self):
@@ -1009,7 +1294,7 @@ class TestReadCSV(_unittest.TestCase):
         self.assertEqual(dm.shape, (5, 4))
         self.assertEqual(dm['A'].type, numpy.string_)
         self.assertEqual(dm['B'].type, numpy.float64)
-        self.assertEqual(dm['C'].type, numpy.int32)
+        self.assertIn(dm['C'].type, [numpy.int32, numpy.int64])
         self.assertEqual(dm['D'].type, numpy.string_)
 
     def test_no_header_names(self):
@@ -1017,7 +1302,7 @@ class TestReadCSV(_unittest.TestCase):
         self.assertEqual(dm.shape, (5, 4))
         self.assertEqual(dm['time'].type, numpy.string_)
         self.assertEqual(dm['aaa'].type, numpy.float64)
-        self.assertEqual(dm['bbb'].type, numpy.int32)
+        self.assertIn(dm['bbb'].type, [numpy.int32, numpy.int64])
         self.assertEqual(dm['ccc'].type, numpy.string_)
 
     def test_no_header_fewnames(self):
@@ -1027,7 +1312,7 @@ class TestReadCSV(_unittest.TestCase):
         self.assertIsInstance(dm['aaa'], lg.DataColumn)
         self.assertEqual(dm['time'].type, numpy.string_)
         self.assertEqual(dm['aaa'].type, numpy.float64)
-        self.assertEqual(dm['A'].type, numpy.int32)
+        self.assertIn(dm['A'].type, [numpy.int32, numpy.int64])
         self.assertEqual(dm['B'].type, numpy.string_)
 
 class TestCreateLog(_unittest.TestCase):
@@ -1104,7 +1389,7 @@ class TestCreateLog(_unittest.TestCase):
 ## ax, l = dm.timeplot(dm['temp enclosure'], format='%H:%M', ylabel='Temperature (in C)', color='r')
 ## dm.timeplot(dm['temp dome'], format='%H:%M', color='g', ax=ax)
 
-## ax, l = dm.timeplot(dm['temp enclosure'], rightax=1/dm['hum enclosure'], format='%H:%M', ylabel='Temperature (in C)')
+## ax, l = dm.timeplot(dm['temp enclosure'], rightax=1/dm['hum enclosure'], time_format='%H:%M', ylabel='Temperature (in C)')
 
 ##
 
