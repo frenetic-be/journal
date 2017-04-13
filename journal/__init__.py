@@ -162,6 +162,12 @@ class AbstractDataColumn(object):
         for val in self.values:
             yield callback(val)
 
+    def copy(self):
+        '''
+        Returns a copy of the object
+        '''
+        return AbstractDataColumn(self.values, self.title)
+
     @property
     def max(self):
         '''
@@ -417,6 +423,20 @@ class DataColumn(AbstractDataColumn):
         Median value in the column
         '''
         return float(_numpy.median(_numpy.asarray(self.nonnan)))
+    
+    @property
+    def all(self):
+        '''
+        True if all values are True
+        '''
+        return self.values.all()
+        
+    @property
+    def any(self):
+        '''
+        True if all values are True
+        '''
+        return self.values.any()
 
 class UnchangeableDataColumn(DataColumn):
     '''
@@ -539,36 +559,48 @@ class TimeColumn(AbstractDataColumn):
         '''
         Comparison method: __lt__
         '''
+        if isinstance(other, TimeColumn):
+            return self.date.__lt__(other.date)
         return self.date.__lt__(other)
 
     def __le__(self, other):
         '''
         Comparison method: __le__
         '''
+        if isinstance(other, TimeColumn):
+            return self.date.__le__(other.date)
         return self.date.__le__(other)
 
     def __gt__(self, other):
         '''
         Comparison method: __gt__
         '''
+        if isinstance(other, TimeColumn):
+            return self.date.__gt__(other.date)
         return self.date.__gt__(other)
 
     def __ge__(self, other):
         '''
         Comparison method: __ge__
         '''
+        if isinstance(other, TimeColumn):
+            return self.date.__ge__(other.date)
         return self.date.__ge__(other)
 
     def __eq__(self, other):
         '''
         Comparison method: __eq__
         '''
+        if isinstance(other, TimeColumn):
+            return self.date.__eq__(other.date)
         return self.date.__eq__(other)
 
     def __ne__(self, other):
         '''
         Comparison method: __ne__
         '''
+        if isinstance(other, TimeColumn):
+            return self.date.__ne__(other.date)
         return self.date.__ne__(other)
 
     def __add__(self, other):
@@ -864,7 +896,7 @@ class DataMatrix(object):
             for title, column in inp.iteritems():
                 if isinstance(column, AbstractDataColumn):
                     column.title = title
-                    columns[title] = column
+                    columns[title] = column.copy()
                 elif title == 'time':
                     columns[title] = TimeColumn(column)
                 else:
@@ -933,6 +965,38 @@ class DataMatrix(object):
         truth value
         '''
         return len(self) != 0
+        
+    def __eq__(self, other):
+        '''
+        Comparison method: __eq__: Two DataMatrix objects are equal if they
+        have the same shape, the same column names and their columns are
+        identical.
+        '''
+        if not isinstance(other, DataMatrix):
+            return False
+        if self.shape != other.shape:
+            return False
+        if self.names != other.names:
+            return False
+        for col in self.names:
+            if (self[col] != other[col]).any:
+                return False
+        return True
+
+    def __ne__(self, other):
+        '''
+        Comparison method: __ne__
+        '''
+        if not isinstance(other, DataMatrix):
+            return True
+        if self.shape != other.shape:
+            return True
+        if self.names != other.names:
+            return True
+        for col in self.names:
+            if (self[col] != other[col]).any:
+                return True
+        return False
 
     def __str__(self):
         '''
@@ -1040,9 +1104,45 @@ class DataMatrix(object):
         return {hdr: _numpy.nan if index >= len(col) else col[index]
                 for hdr, col in self.columns.iteritems()}
 
-    def timeplot(self, data, ax=None, xlabel='', ylabel='', time_format='seconds',
-                 grid=True, legend=True, prevlines=None, rightax=None,
-                 colorrightax='r', **kwargs):
+    def copy(self):
+        '''
+        Returns a copy of the object
+        '''
+        import copy
+        input = copy.deepcopy(self.columns)
+        return DataMatrix(inp=input)
+
+    def append(self, other):
+        '''
+        appends other DataMatrix at the bottom
+        ''' 
+        append = _numpy.append
+        
+        if not isinstance(other, DataMatrix):
+            raise TypeError("Cannot append an object of type {0} to a "
+                            "DataMatrix object".format(type(other)))
+
+        if self.names != other.names:
+            raise ValueError("Cannot append: the two DataMatrix objects have "
+                             "different column names")
+        
+        for col in self.names:
+            self[col].append(other[col])
+
+    def timeplot(self,
+                 data=None,
+                 ax=None,
+                 xlabel='',
+                 ylabel='', 
+                 time_format='seconds',
+                 title='',
+                 grid=True,
+                 legend=True,
+                 prevlines=None,
+                 right_data=None,
+                 right_color='r',
+                 right_label='',
+                 **kwargs):
         '''
         Plots a data column as a function of time
         '''
@@ -1053,46 +1153,88 @@ class DataMatrix(object):
             fig = _plt.figure()
             ax = fig.add_subplot(111)
 
+        if data is None:
+            data = self.columns
+            
+        otherFormat = False
+
         if time_format.lower() in ['sec', 'secs', 'second', 'seconds']:
-            line, = ax.plot(self['time'].time.values, data.values,
-                            label=data.title, **kwargs)
+            timevalues = self['time'].time.values
             if not xlabel:
                 xlabel = 'Time (in seconds)'
         elif time_format.lower() in ['min', 'mins', 'minute', 'minutes']:
-            line, = ax.plot(self['time'].time.values/60., data.values,
-                            label=data.title, **kwargs)
+            timevalues = self['time'].time.values/60.
             if not xlabel:
                 xlabel = 'Time (in minutes)'
         elif time_format.lower() in ['hr', 'hrs', 'hour', 'hours']:
-            line, = ax.plot(self['time'].time.values/3600., data.values,
-                            label=data.title, **kwargs)
+            timevalues = self['time'].time.values/3600.
             if not xlabel:
                 xlabel = 'Time (in hours)'
         elif time_format.lower() in ['day', 'days']:
-            line, = ax.plot(self['time'].time.values/3600./24., data.values,
-                            label=data.title, **kwargs)
+            timevalues = self['time'].time.values/3600./24.
             if not xlabel:
                 xlabel = 'Time (in days)'
         elif time_format.lower() in ['jd', 'jds']:
-            line, = ax.plot(self['time'].jd.values, data.values,
-                            label=data.title, **kwargs)
+            timevalues = self['time'].jd.values
             if not xlabel:
                 xlabel = 'Time (in Julian Days)'
         elif time_format == '':
-            line, = ax.plot(self['time'].date.values, data.values,
-                            label=data.title, **kwargs)
+            timevalues = self['time'].date.values
             fig.autofmt_xdate()
         else:
             import matplotlib.dates as mdates
             dates = self['time'].date
-            if rightax:
-                ax2 = ax.twinx()
-                line2, = ax2.plot(dates.values, rightax.values,
-                                  color=colorrightax, label=rightax.title,
-                                  **kwargs)
-                ax2.set_zorder(0)
-            line, = ax.plot(dates.values, data.values,
-                            label=data.title, **kwargs)
+            timevalues = dates.values
+            otherFormat = True
+        
+        if isinstance(data, AbstractDataColumn):
+            line, = ax.plot(timevalues, data.values, label=data.title,
+                            **kwargs)
+        elif isinstance(data, tuple):
+        
+            colors = kwargs.pop('color', None)
+            if isinstance(colors, str) or colors is None:
+                colors = tuple(colors for _ in xrange(len(data)))
+            if len(colors) != len(data):
+                raise ValueError("Wrong color argument")
+                
+            linewidths = kwargs.pop('linewidth', 0) or kwargs.pop('lw', 1)
+            if isinstance(linewidths, int) or linewidths is None:
+                linewidths = tuple(linewidths for _ in xrange(len(data)))
+            if len(linewidths) != len(data):
+                raise ValueError("Wrong linewidth argument")
+
+            markers = kwargs.pop('marker', None)
+            if isinstance(markers, str) or markers is None:
+                markers = tuple(markers for _ in xrange(len(data)))
+            if len(markers) != len(data):
+                raise ValueError("Wrong marker argument")
+
+            for j, subdata in enumerate(data):
+                if not isinstance(subdata, AbstractDataColumn):
+                    raise TypeError("You can only plots DataColumn objects")
+                
+                line, = ax.plot(timevalues, subdata.values,
+                                label=subdata.title,
+                                color=colors[j],
+                                linewidth=linewidths[j],
+                                marker=markers[j],
+                                **kwargs)
+        
+        elif isinstance(data, dict):
+
+            for j, subdata in enumerate(data.itervalues()):
+                if not isinstance(subdata, AbstractDataColumn):
+                    raise TypeError("You can only plots DataColumn objects")
+                
+                try:
+                    line, = ax.plot(timevalues, subdata.values,
+                                    label=subdata.title, **kwargs)
+                except ValueError:
+                    print ("Warning: data column not plotted "
+                           "({0})".format(subdata.title))
+        
+        if otherFormat:
             ax.set_xlim([dates.min, dates.max])
             datediff = (dates.max-dates.min).total_seconds()
             daterange = mdates.drange(dates.min, dates.max,
@@ -1100,18 +1242,32 @@ class DataMatrix(object):
             ax.set_xticks(daterange)
             ax.get_xaxis().set_major_formatter(mdates.DateFormatter(time_format))
             if not xlabel:
-                xlabel = 'Time'
-        if rightax:
+                xlabel = 'Time'            
+        
+        if right_data:
             grid = False
+
+            ax2 = ax.twinx()
+            if 'color' in kwargs:
+                kwargs.pop('color')
+            line2, = ax2.plot(timevalues, right_data.values,
+                              color=right_color, label=right_data.title,
+                              **kwargs)
+            ax2.set_zorder(0)
+            if right_label:
+                ax2.set_ylabel(right_label, rotation=270, labelpad=15)
+
         if grid:
             ax.grid(b=True, which='major')
         if xlabel:
             ax.set_xlabel(xlabel)
         if ylabel:
             ax.set_ylabel(ylabel)
+        if title:
+            ax.set_title(title)
 
         if legend:
-            if rightax:
+            if right_data:
                 lines = [line, line2]
                 ax.set_frame_on(False)
                 ax2.set_frame_on(True)
@@ -1128,8 +1284,9 @@ class DataMatrix(object):
             leg = ax.legend(lines, labs, loc=3)
 #            leg.set_zorder(20)
             leg.get_frame().set_alpha(0.8)
-        if rightax:
+        if right_data:
             return (ax, ax2), (line, line2)
+        
         return ax, line
 
     def save_pickle(self, filename):
@@ -1249,7 +1406,9 @@ def read_csv(filename, names=None, delimiter=',', skiplines=0,
                 if start:
                     if j >= len(fields):
                         fields.append(j)
-                    if fields[j] == 'time':
+                    if (isinstance(fields[j], str)
+                            and fields[j].lower() == 'time'):
+                        fields[j] = fields[j].lower()
                         cols.append(TimeColumn(theel))
                     else:
                         title = fields[j]
