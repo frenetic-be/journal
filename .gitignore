@@ -4,6 +4,7 @@ MANIFEST
 dist/
 dist/journal-1.0/*
 dist/journal-1.0
+dist/*
 dist/.DS_Store
 build/
 build/*
@@ -11,3 +12,4 @@ build/*
 tests/logs/*
 tests/tests/logs/*
 tests/plots/*
+journal.egg-info

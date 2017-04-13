@@ -5,7 +5,7 @@
 
 Simple module to handle time-dependent data from csv files.
 '''
-__version__ = '1.0'
+__version__ = '1.1'
 
 
 import numpy as _numpy
